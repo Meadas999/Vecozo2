@@ -57,11 +57,15 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                HttpContext.Session.SetInt32("MwId", mwid);
-                MedewerkerVM vm = new(MC.FindById(mwid));
-                vm.Ratings = VC.FindByMedewerker(vm.UserID).Select(x => new RatingVM(x)).ToList();
-                //vm.MijnTeam = new(TC.FindById(vm.UserID));
-                return View(vm);
+                if (HttpContext.Session.GetInt32("UserId") != null)
+                {
+                    HttpContext.Session.SetInt32("MwId", mwid);
+                    MedewerkerVM vm = new(MC.FindById(mwid));
+                    vm.Ratings = VC.FindByMedewerker(vm.UserID).Select(x => new RatingVM(x)).ToList();
+                    //vm.MijnTeam = new(TC.FindById(vm.UserID));
+                    return View(vm);
+                }
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {
@@ -82,9 +86,13 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                RatingVM rating = new();
-                rating.Vaardigheid = new();
-                return PartialView("_VaardigheidTvgPartial", rating);
+                if (HttpContext.Session.GetInt32("UserId") != null)
+                {
+                    RatingVM rating = new();
+                    rating.Vaardigheid = new();
+                    return PartialView("_VaardigheidTvgPartial", rating);
+                }
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {
@@ -106,12 +114,16 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                int? id = HttpContext.Session.GetInt32("MwId");
-                Medewerker med = MC.FindById(id.Value);
-                r.Vaardigheid = new VaardigheidVM(r.vaardigheidNaam);
-                Rating rating = r.GetRating();
-                VC.VoegVaardigheidToeAanMedewerker(med, rating);
-                return RedirectToAction("Index");
+                if (HttpContext.Session.GetInt32("UserId") != null)
+                {
+                    int? id = HttpContext.Session.GetInt32("MwId");
+                    Medewerker med = MC.FindById(id.Value);
+                    r.Vaardigheid = new VaardigheidVM(r.vaardigheidNaam);
+                    Rating rating = r.GetRating();
+                    VC.VoegVaardigheidToeAanMedewerker(med, rating);
+                    return RedirectToAction("Index");
+                }
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {
@@ -133,10 +145,14 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                int? Userid = HttpContext.Session.GetInt32("MwId");
-                Rating r = VC.FindRating(Userid.Value, VaardigheidId);
-                RatingVM rating = new(r);
-                return PartialView("_VaardigheidVwdPartial", rating);
+                if (HttpContext.Session.GetInt32("UserId") != null)
+                {
+                    int? Userid = HttpContext.Session.GetInt32("MwId");
+                    Rating r = VC.FindRating(Userid.Value, VaardigheidId);
+                    RatingVM rating = new(r);
+                    return PartialView("_VaardigheidVwdPartial", rating);
+                }
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {
@@ -159,11 +175,15 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                int? id = HttpContext.Session.GetInt32("MwId");
-                Medewerker med = MC.FindById(id.Value);
-                VC.VerwijderVaarigheidVanMedewerker(med, VaardigheidId);
-                RatingVM rating = new();
-                return RedirectToAction("Index");
+                if (HttpContext.Session.GetInt32("UserId") != null)
+                {
+                    int? id = HttpContext.Session.GetInt32("MwId");
+                    Medewerker med = MC.FindById(id.Value);
+                    VC.VerwijderVaarigheidVanMedewerker(med, VaardigheidId);
+                    RatingVM rating = new();
+                    return RedirectToAction("Index");
+                }
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {
@@ -185,10 +205,14 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                int? Userid = HttpContext.Session.GetInt32("MwId");
-                Rating r = VC.FindRating(Userid.Value, VaardigheidId);
-                RatingVM rating = new(r);
-                return PartialView("_VaardigheidEditPartial", rating);
+                if (HttpContext.Session.GetInt32("UserId") != null)
+                {
+                    int? Userid = HttpContext.Session.GetInt32("MwId");
+                    Rating r = VC.FindRating(Userid.Value, VaardigheidId);
+                    RatingVM rating = new(r);
+                    return PartialView("_VaardigheidEditPartial", rating);
+                }
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {
@@ -210,12 +234,16 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                int? id = HttpContext.Session.GetInt32("MwId");
-                Medewerker med = MC.FindById(id.Value);
-                r.Vaardigheid = new VaardigheidVM(r.vaardigheidNaam, r.vaardigheidId);
-                Rating rating = r.GetRating();
-                VC.UpdateRating(med, rating);
-                return RedirectToAction("Index");
+                if (HttpContext.Session.GetInt32("UserId") != null)
+                {
+                    int? id = HttpContext.Session.GetInt32("MwId");
+                    Medewerker med = MC.FindById(id.Value);
+                    r.Vaardigheid = new VaardigheidVM(r.vaardigheidNaam, r.vaardigheidId);
+                    Rating rating = r.GetRating();
+                    VC.UpdateRating(med, rating);
+                    return RedirectToAction("Index");
+                }
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {

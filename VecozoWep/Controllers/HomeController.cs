@@ -20,7 +20,11 @@ namespace VecozoWep.Controllers
         /// <returns>Return de view voor de homepagina</returns>
         public IActionResult Index()
         {
-            return View();
+            if(HttpContext.Session.GetInt32("UserId") != null)
+            {
+                return View();
+            }
+            return RedirectToAction("Index","Login");
         }
 
 
@@ -30,7 +34,11 @@ namespace VecozoWep.Controllers
         /// <returns>Return de view voor de privacypagina</returns>
         public IActionResult Privacy()
         {
-            return View();
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+                return View();
+            }
+            return RedirectToAction("Index", "Login");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

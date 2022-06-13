@@ -7,66 +7,68 @@
 }
 <head>
     <script type="text/javascript">
-        function Update(){
-            var select = document.getElementById('admin');
-            var option = select.options[select.selectedIndex];
-            document.getElementById('text').value = option.text;
-            document.getElementById('textID').value = option.value;
-        }
+                        function Update(){
+                            var select = document.getElementById('admin');
+                            var option = select.options[select.selectedIndex];
+                            document.getElementById('text').value = option.text;
+                            document.getElementById('textID').value = option.value;
+                        }
 
-        function UpdateTeam(){
-            var select = document.getElementById('team');
-            var option = select.options[select.selectedIndex];
-            document.getElementById('mijnTeam').value = option.text;
-            document.getElementById('teamID').value = option.value;
-        }
+                        function UpdateTeam(){
+                            var select = document.getElementById('team');
+                            var option = select.options[select.selectedIndex];
+                            document.getElementById('mijnTeam').value = option.text;
+                            document.getElementById('teamID').value = option.value;
+                        }
 
-        function GetRadioButtonChecked(){
-            var rbtnAdmin = document.getElementById('Admin');
-            var rbtnMedewerker = document.getElementById('Medewerker');
-            if(rbtnAdmin.checked)
-            {
-                return "True";
-            }
-            else
-            {
-                return "False";
-            }
-        }
+                        function GetRadioButtonChecked(){
+                            var rbtnAdmin = document.getElementById('Admin');
+                            var rbtnMedewerker = document.getElementById('Medewerker');
+                            if(rbtnAdmin.checked)
+                            {
+                                return "True";
+                            }
+                            else
+                            {
+                                return "False";
+                            }
+                        }
 
-        function HideAdmins(){
-            if(document.getElementById('Admin').checked)
-            {
-                document.getElementById('adminPanel').style.visibility = 'hidden'
-            }
-            else
-            {
-                document.getElementById('adminPanel').style.visibility = 'visible'
-            }
-        }
+                        function HideAdmins(){
+                            if(document.getElementById('Admin').checked)
+                            {
+                                document.getElementById('adminPanel').style.visibility = 'hidden'
+                            }
+                            else
+                            {
+                                document.getElementById('adminPanel').style.visibility = 'visible'
+                            }
+                        }
 
-        function ValidCheck(){
-            var selectTeam = document.getElementById('team');
-            var selectAdmin = document.getElementById('admin');
-            var rbtnAdmin = document.getElementById('Admin');
-            var optionTeam = selectTeam.options[selectTeam.selectedIndex];
-            var optionAdmin = selectAdmin.options[selectAdmin.selectedIndex];
-            if(rbtnAdmin.checked == false)
-                {
-                    if(optionAdmin.text !== "" && optionTeam.text !== "")
-                    {
-                       return true;
-                    }
-                    else{
-                       document.getElementById('teampie').innerHTML = "team en leidinggevende kiezen is verplicht."
-                        return false;
-                    }
-                }
-                else
-                {
-                    return true;
-                }
-        }
+                        function ValidCheck(){
+                            var selectTeam = document.getElementById('team');
+                            var selectAdmin = document.getElementById('admin');
+                            var rbtnAdmin = document.getElementById('Admin');
+                            var optionTeam = selectTeam.options[selectTeam.selectedIndex];
+                            var optionAdmin = selectAdmin.options[selectAdmin.selectedIndex];
+                            if(rbtnAdmin.checked == false)
+                                {
+                                    if(optionAdmin.text !== "" && optionTeam.text !== "")
+                                    {
+                                       return true;
+                                    }
+                                    else{
+                                       document.getElementById('teampie').innerHTML = "team en leidinggevende kiezen is verplicht."
+                                        return false;
+                                    }
+                                }
+                                else
+                                {
+                                    return true;
+                                }
+                        }
+
+        function removeSpaces(string) { return string.split(' ').join(''); }
     </script>
 </head>
 <section class="vh-100 gradient-custom">
@@ -80,21 +82,21 @@
                             <div class="row">
                                 <div class="col-md-4 mb-4">
                                     <div class="form-outline">
-                                        <input type="text" id="firstName" class="form-control form-control-lg" asp-for="@Model.Medewerker.Voornaam" required />
+                                        <input type="text" id="firstName" class="form-control form-control-lg" onblur="this.value=removeSpaces(this.value);" asp-for="@Model.Medewerker.Voornaam" required />
                                         <label class="form-label" asp-for="@Model.Medewerker.Voornaam">Voornaam</label>
                                     </div>
 
                                 </div>
                                 <div class="col-md-4 mb-4">
                                     <div class="form-outline">
-                                        <input type="text" id="tussenvoegsel" class="form-control form-control-lg" asp-for="@Model.Medewerker.Tussenvoegsel" />
+                                        <input type="text" id="tussenvoegsel" class="form-control form-control-lg" onblur="this.value=removeSpaces(this.value);" asp-for="@Model.Medewerker.Tussenvoegsel" />
                                         <label class="form-label" asp-for="@Model.Medewerker.Tussenvoegsel">Tussenvoegsel</label>
                                     </div>
 
                                 </div>
                                 <div class="col-md-4 mb-4">
                                     <div class="form-outline">
-                                        <input type="text" id="lastName" class="form-control form-control-lg" asp-for="@Model.Medewerker.Achternaam" required />
+                                        <input type="text" id="lastName" class="form-control form-control-lg" onblur="this.value=removeSpaces(this.value);" asp-for="@Model.Medewerker.Achternaam" required />
                                         <label class="form-label" asp-for="@Model.Medewerker.Achternaam">Achternaam</label>
                                     </div>
                                 </div>
@@ -102,13 +104,13 @@
                             <div class="row">
                                 <div class="col-md-6 mb-4 pb-2">
                                     <div class="form-outline">
-                                        <input type="email" id="emailAddress" class="form-control form-control-lg" asp-for="@Model.Medewerker.Email" required />
+                                        <input type="email" id="emailAddress" class="form-control form-control-lg" onblur="this.value=removeSpaces(this.value);" asp-for="@Model.Medewerker.Email" required />
                                         <label class="form-label" asp-for="@Model.Medewerker.Email">Email</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-4 pb-2">
                                     <div class="form-outline">
-                                        <input type="password" id="wachtwoord" class="form-control form-control-lg" asp-for="@Model.Medewerker.Wachtwoord" required />
+                                        <input type="password" id="wachtwoord" class="form-control form-control-lg" onblur="this.value=removeSpaces(this.value);" asp-for="@Model.Medewerker.Wachtwoord" required />
                                         <label class="form-label" for="wachtwoord">Wachtwoord</label>
                                     </div>
                                 </div>

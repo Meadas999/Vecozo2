@@ -27,16 +27,17 @@ namespace VecozoWep.Controllers
                 InlogVM vm = new();
                 return View(vm);
             }
-            catch (TemporaryException ex)
+            catch (TemporaryException)
             {
                 return View("SqlErrorMessage");
             }
-            catch (PermanentException ex)
+            catch (PermanentException)
             {
                 return View("PermanentError");
             }
         }
 
+        [HttpPost]
         /// <summary>
         /// Checkt of de gegevens die worden meegegeven bestaan
         /// </summary>
@@ -89,10 +90,14 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                GebruikersVM vm = new();
-                vm.Leidinggevenden = LC.HaalAlleLeidinggevendeOp().Select(x => new LeidinggevendenVM(x)).ToList();
-                vm.Teams = TC.GetAll().Select(x => new TeamVM(x)).ToList();
-                return View(vm);
+                if (HttpContext.Session.GetInt32("UserId") != null)
+                {
+                    GebruikersVM vm = new();
+                    vm.Leidinggevenden = LC.HaalAlleLeidinggevendeOp().Select(x => new LeidinggevendenVM(x)).ToList();
+                    vm.Teams = TC.GetAll().Select(x => new TeamVM(x)).ToList();
+                    return View(vm);
+                }
+                return View("Index");
             }
             catch (TemporaryException ex)
             {
@@ -115,27 +120,31 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                Medewerker med = new(vm.Medewerker.Email, vm.Medewerker.Voornaam, vm.Medewerker.Achternaam, vm.Medewerker.Tussenvoegsel);
-                if (vm.Medewerker.IsAdmin)
+                if (HttpContext.Session.GetInt32("UserId") != null)
                 {
-                    LeidingGevende l = new(med.Email, med.Voornaam, med.Achternaam, 0, med.Tussenvoegsel);
-                    LC.Create(l, vm.Medewerker.Wachtwoord);
-                    LeidingGevende leid = LC.Inloggen(l.Email, vm.Medewerker.Wachtwoord);
-                    return RedirectToAction("Index", "Admin");
-                }
-                else
-                {
-                    if (vm.Leidinggevende.UserID > 0 && vm.Team.Id > 0)
+                    Medewerker med = new(vm.Medewerker.Email, vm.Medewerker.Voornaam, vm.Medewerker.Achternaam, vm.Medewerker.Tussenvoegsel);
+                    if (vm.Medewerker.IsAdmin)
                     {
-                        med.MijnTeam = TC.FindById(vm.Team.Id);
-                        MC.Create(med, vm.Medewerker.Wachtwoord);
-                        LeidingGevende leid = LC.FindById(vm.Leidinggevende.UserID);
-                        Medewerker medewerker = MC.Inloggen(med.Email, vm.Medewerker.Wachtwoord);
-                        MC.KoppelMedewerkerAanLeidinggevenden(medewerker, leid);
+                        LeidingGevende l = new(med.Email, med.Voornaam, med.Achternaam, 0, med.Tussenvoegsel);
+                        LC.Create(l, vm.Medewerker.Wachtwoord);
+                        LeidingGevende leid = LC.Inloggen(l.Email, vm.Medewerker.Wachtwoord);
                         return RedirectToAction("Index", "Admin");
                     }
-                    return RedirectToAction("Register", "Login");
+                    else
+                    {
+                        if (vm.Leidinggevende.UserID > 0 && vm.Team.Id > 0)
+                        {
+                            med.MijnTeam = TC.FindById(vm.Team.Id);
+                            MC.Create(med, vm.Medewerker.Wachtwoord);
+                            LeidingGevende leid = LC.FindById(vm.Leidinggevende.UserID);
+                            Medewerker medewerker = MC.Inloggen(med.Email, vm.Medewerker.Wachtwoord);
+                            MC.KoppelMedewerkerAanLeidinggevenden(medewerker, leid);
+                            return RedirectToAction("Index", "Admin");
+                        }
+                        return RedirectToAction("Register", "Login");
+                    }
                 }
+                return View("Index");
             }
             catch (TemporaryException ex)
             {

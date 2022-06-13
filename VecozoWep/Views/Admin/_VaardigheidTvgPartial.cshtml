@@ -1,0 +1,48 @@
+﻿@using VecozoWeb.Models
+@model RatingVM
+
+<!-- Modal -->
+<div class="modal fade" id="vaardigheidToevoegen" tabindex="-1" aria-labelledby="vaardigheidToevoegenLabel" aria-hidden="true">
+    <div class=" modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vaardigheidToevoegenLabel">Nieuwe vaardigheid</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="VaardigheidToevoegen">
+                    <div class="form-group">
+                        <input type="hidden" asp-for="LaatsteDatum" value="@DateTime.Now" />
+                        <label asp-for="vaardigheidNaam">Naam</label>
+                        <input asp-for="vaardigheidNaam" class="form-control">
+                        <span asp-validation-for="vaardigheidNaam" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label asp-for="Score">Score</label>
+                        <br />
+                        <div class="stars">
+                            <input asp-for="Score" type="radio" class="star star-5 form-control" id="star-5" value="5" /><label class="star star-5" for="star-5"></label>
+                            <input asp-for="Score" type="radio" class="star star-4 form-control" id="star-4" value="4" /><label class="star star-4" for="star-4"></label>
+                            <input asp-for="Score" type="radio" class="star star-3 form-control" id="star-3" value="3" /><label class="star star-3" for="star-3"></label>
+                            <input asp-for="Score" type="radio" class="star star-2 form-control" id="star-2" value="2" /><label class="star star-2" for="star-2"></label>
+                            <input asp-for="Score" type="radio" class="star star-1 form-control" id="star-1" value="1" /><label class="star star-1" for="star-1"></label>
+                        </div>
+                        <span asp-validation-for="Score" class="star"></span>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label asp-for="Beschrijving">Beschrijving</label>
+                        <input asp-for="Beschrijving" class="form-control">
+                        <span asp-validation-for="Beschrijving" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Annuleren</button>
+                <button type="button" class="btn btn-primary" data-save="modal">Vaardigheid toevoegen</button>
+            </div>
+        </div>
+    </div>
+</div>
+

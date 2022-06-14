@@ -10,10 +10,20 @@ namespace VecozoWep.Controllers
 {
     public class AdminController : Controller
     {
-        private LeidingGevendeContainer LC = new(new LeidinggevendenDAL());
-        private MedewerkerContainer MC = new(new MedewerkerDAL());
-        private VaardigheidContainer VC = new(new VaardigheidDAL());
-        private TeamContainer TC = new(new TeamDAL());
+        private readonly LeidingGevendeContainer LC;
+        private readonly MedewerkerContainer MC;
+        private readonly VaardigheidContainer VC;
+        private readonly TeamContainer TC;
+        private readonly IConfiguration config;
+
+        public AdminController(IConfiguration config)
+        {
+            this.config = config;
+            LC = new(new LeidinggevendenDAL(this.config["db:ConnectionString"]));
+            MC = new(new MedewerkerDAL(this.config["db:ConnectionString"]));
+            VC = new(new VaardigheidDAL(this.config["db:ConnectionString"]));
+            TC = new(new TeamDAL(this.config["db:ConnectionString"]));
+        }
 
         /// <summary>
         /// Haalt alle medewerkers op van een bepaalde leidinggevende
@@ -23,18 +33,20 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                if (HttpContext.Session.GetInt32("UserId") != null)
+                if (HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("IsAdmin") != null)
                 {
-                    int id = Convert.ToInt32(HttpContext.Session.GetInt32("UserId"));
-                    LeidinggevendenVM vm = new(LC.FindById(id));
-                    vm.Medewerkers = MC.HaalAlleMedewerkersOp().Select(x => new MedewerkerVM(x)).ToList();
-
-                    foreach (MedewerkerVM m in vm.Medewerkers)
+                    if(Convert.ToInt32(HttpContext.Session.GetInt32("IsAdmin")) == 1)
                     {
-                        m.Ratings = VC.FindByMedewerker(m.UserID).Select(x => new RatingVM(x)).ToList();
-                        m.MijnTeam = new(TC.FindById(m.UserID));
+                        int id = Convert.ToInt32(HttpContext.Session.GetInt32("UserId"));
+                        LeidinggevendenVM vm = new(LC.FindById(id));
+                        vm.Medewerkers = MC.HaalAlleMedewerkersOp().Select(x => new MedewerkerVM(x)).ToList();
+                        foreach (MedewerkerVM m in vm.Medewerkers)
+                        {
+                            m.Ratings = VC.FindByMedewerker(m.UserID).Select(x => new RatingVM(x)).ToList();
+                            m.MijnTeam = new(TC.FindById(m.UserID));
+                        }
+                        return View(vm);
                     }
-                    return View(vm);
                 }
                 return RedirectToAction("Index", "Login");
             }
@@ -57,13 +69,16 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                if (HttpContext.Session.GetInt32("UserId") != null)
+                if (HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("IsAdmin") != null)
                 {
-                    HttpContext.Session.SetInt32("MwId", mwid);
-                    MedewerkerVM vm = new(MC.FindById(mwid));
-                    vm.Ratings = VC.FindByMedewerker(vm.UserID).Select(x => new RatingVM(x)).ToList();
-                    //vm.MijnTeam = new(TC.FindById(vm.UserID));
-                    return View(vm);
+                    if (Convert.ToInt32(HttpContext.Session.GetInt32("IsAdmin")) == 1)
+                    {
+                        HttpContext.Session.SetInt32("MwId", mwid);
+                        MedewerkerVM vm = new(MC.FindById(mwid));
+                        vm.Ratings = VC.FindByMedewerker(vm.UserID).Select(x => new RatingVM(x)).ToList();
+                        //vm.MijnTeam = new(TC.FindById(vm.UserID));
+                        return View(vm);
+                    }
                 }
                 return RedirectToAction("Index", "Login");
             }

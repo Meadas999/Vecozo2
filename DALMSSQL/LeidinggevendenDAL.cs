@@ -11,9 +11,14 @@ namespace DALMSSQL
 {
     public class LeidinggevendenDAL : ILeidinggevendeContainer
     {
-        ConnectionDb db = new ConnectionDb();
-        MedewerkerDAL md = new();
-
+        private readonly ConnectionDb db;
+        private readonly string connectionString;
+        
+        public LeidinggevendenDAL(string con)
+        {
+            this.connectionString = con;
+            db = new(this.connectionString);
+        }
         /// <summary>
         /// Maak een leidinggevende aan
         /// </summary>
@@ -35,7 +40,7 @@ namespace DALMSSQL
                 cmd.Parameters.AddWithValue("@Voornaam", dto.Voornaam);
                 cmd.Parameters.AddWithValue("@Tussenvoegsel", dto.Tussenvoegsel);
                 cmd.Parameters.AddWithValue("@Achternaam", dto.Achternaam);
-                cmd.Parameters.AddWithValue("@Email", dto.Email);
+                cmd.Parameters.AddWithValue("@Email", dto.Email.ToLower());
                 cmd.Parameters.AddWithValue("@Wachtwoord", wachtwoordHash);
                 cmd.ExecuteNonQuery();
                 db.CloseConnetion();

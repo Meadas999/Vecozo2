@@ -11,8 +11,14 @@ namespace DALMSSQL
 {
     public class TeamDAL : ITeamContainer
     {
-        ConnectionDb db = new();
-
+        private readonly ConnectionDb db;
+        private readonly string connectionString;
+        
+        public TeamDAL(string con)
+        {
+            this.connectionString = con;
+            this.db = new(this.connectionString);
+        }
         /// <summary>
         /// Zoekt een team op basis van de meegegeven ID
         /// </summary>

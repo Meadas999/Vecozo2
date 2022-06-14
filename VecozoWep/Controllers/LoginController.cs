@@ -10,10 +10,18 @@ namespace VecozoWep.Controllers
 {
     public class LoginController : Controller
     {
-        private MedewerkerContainer MC = new(new MedewerkerDAL());
-        private LeidingGevendeContainer LC = new(new LeidinggevendenDAL());
-        private TeamContainer TC = new(new TeamDAL());
+        private readonly MedewerkerContainer MC;
+        private readonly LeidingGevendeContainer LC;
+        private readonly TeamContainer TC;
+        private readonly IConfiguration config;
 
+        public LoginController(IConfiguration config)
+        {
+            this.config = config;
+            MC = new(new MedewerkerDAL(this.config["db:ConnectionString"]));
+            LC = new(new LeidinggevendenDAL(this.config["db:ConnectionString"]));
+            TC = new(new TeamDAL(this.config["db:ConnectionString"]));
+        }
         /// <summary>
         /// Geeft de login pagina
         /// </summary>
@@ -90,12 +98,15 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                if (HttpContext.Session.GetInt32("UserId") != null)
+                if (HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("IsAdmin") != null)
                 {
-                    GebruikersVM vm = new();
-                    vm.Leidinggevenden = LC.HaalAlleLeidinggevendeOp().Select(x => new LeidinggevendenVM(x)).ToList();
-                    vm.Teams = TC.GetAll().Select(x => new TeamVM(x)).ToList();
-                    return View(vm);
+                    if (Convert.ToInt32(HttpContext.Session.GetInt32("IsAdmin")) == 1)
+                    {
+                        GebruikersVM vm = new();
+                        vm.Leidinggevenden = LC.HaalAlleLeidinggevendeOp().Select(x => new LeidinggevendenVM(x)).ToList();
+                        vm.Teams = TC.GetAll().Select(x => new TeamVM(x)).ToList();
+                        return View(vm);
+                    }
                 }
                 return View("Index");
             }
@@ -120,28 +131,31 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                if (HttpContext.Session.GetInt32("UserId") != null)
+                if (HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("IsAdmin") != null)
                 {
-                    Medewerker med = new(vm.Medewerker.Email, vm.Medewerker.Voornaam, vm.Medewerker.Achternaam, vm.Medewerker.Tussenvoegsel);
-                    if (vm.Medewerker.IsAdmin)
+                    if (Convert.ToInt32(HttpContext.Session.GetInt32("IsAdmin")) == 1)
                     {
-                        LeidingGevende l = new(med.Email, med.Voornaam, med.Achternaam, 0, med.Tussenvoegsel);
-                        LC.Create(l, vm.Medewerker.Wachtwoord);
-                        LeidingGevende leid = LC.Inloggen(l.Email, vm.Medewerker.Wachtwoord);
-                        return RedirectToAction("Index", "Admin");
-                    }
-                    else
-                    {
-                        if (vm.Leidinggevende.UserID > 0 && vm.Team.Id > 0)
+                        Medewerker med = new(vm.Medewerker.Email, vm.Medewerker.Voornaam, vm.Medewerker.Achternaam, vm.Medewerker.Tussenvoegsel);
+                        if (vm.Medewerker.IsAdmin)
                         {
-                            med.MijnTeam = TC.FindById(vm.Team.Id);
-                            MC.Create(med, vm.Medewerker.Wachtwoord);
-                            LeidingGevende leid = LC.FindById(vm.Leidinggevende.UserID);
-                            Medewerker medewerker = MC.Inloggen(med.Email, vm.Medewerker.Wachtwoord);
-                            MC.KoppelMedewerkerAanLeidinggevenden(medewerker, leid);
+                            LeidingGevende l = new(med.Email, med.Voornaam, med.Achternaam, 0, med.Tussenvoegsel);
+                            LC.Create(l, vm.Medewerker.Wachtwoord);
+                            LeidingGevende leid = LC.Inloggen(l.Email, vm.Medewerker.Wachtwoord);
                             return RedirectToAction("Index", "Admin");
                         }
-                        return RedirectToAction("Register", "Login");
+                        else
+                        {
+                            if (vm.Leidinggevende.UserID > 0 && vm.Team.Id > 0)
+                            {
+                                med.MijnTeam = TC.FindById(vm.Team.Id);
+                                MC.Create(med, vm.Medewerker.Wachtwoord);
+                                LeidingGevende leid = LC.FindById(vm.Leidinggevende.UserID);
+                                Medewerker medewerker = MC.Inloggen(med.Email, vm.Medewerker.Wachtwoord);
+                                MC.KoppelMedewerkerAanLeidinggevenden(medewerker, leid);
+                                return RedirectToAction("Index", "Admin");
+                            }
+                            return RedirectToAction("Register", "Login");
+                        }
                     }
                 }
                 return View("Index");

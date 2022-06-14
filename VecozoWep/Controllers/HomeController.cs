@@ -7,10 +7,12 @@ namespace VecozoWep.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration config;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,IConfiguration config)
         {
             _logger = logger;
+            this.config = config;
         }
 
 

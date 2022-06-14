@@ -9,9 +9,16 @@ namespace VecozoWep.Controllers
 {
     public class MedewerkerController : Controller
     {
-        private MedewerkerContainer MC = new(new MedewerkerDAL());
-        private VaardigheidContainer VC = new(new VaardigheidDAL());
+        private readonly MedewerkerContainer MC;
+        private readonly VaardigheidContainer VC;
+        private readonly IConfiguration config;
 
+        public MedewerkerController(IConfiguration config)
+        {
+            this.config = config;
+            MC = new(new MedewerkerDAL(this.config["db:ConnectionString"]));
+            VC = new(new VaardigheidDAL(this.config["db:ConnectionString"]));
+        }
         /// <summary>
         /// Geeft de medewerker pagina met zijn ratings 
         /// </summary>
@@ -20,13 +27,16 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                if (HttpContext.Session.GetInt32("UserId") != null)
+                if (HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("IsAdmin") != null)
                 {
-                    int id = Convert.ToInt32(HttpContext.Session.GetInt32("UserId"));
-                    Medewerker med = MC.FindById(id);
-                    med.Ratings = VC.FindByMedewerker(med.UserID);
-                    MedewerkerVM vm = new(med);
-                    return View(vm);
+                    if(Convert.ToInt32(HttpContext.Session.GetInt32("IsAdmin")) == 0)
+                    {
+                        int id = Convert.ToInt32(HttpContext.Session.GetInt32("UserId"));
+                        Medewerker med = MC.FindById(id);
+                        med.Ratings = VC.FindByMedewerker(med.UserID);
+                        MedewerkerVM vm = new(med);
+                        return View(vm);
+                    }
                 }
                 return RedirectToAction("Index", "Login");
             }

@@ -6,9 +6,14 @@ namespace DALMSSQL
 {
     public class MedewerkerDAL : IMedewerkerContainer
     {
-        ConnectionDb db = new ConnectionDb();
-        VaardigheidDAL vaardigheidDAL = new VaardigheidDAL();
+        private readonly ConnectionDb db;
+        private readonly string connectionString;
 
+        public MedewerkerDAL(string con)
+        {
+            this.connectionString = con;
+            this.db = new(this.connectionString);
+        }
         /// <summary>
         /// Een medewerker aanmaken
         /// </summary>
@@ -29,7 +34,7 @@ namespace DALMSSQL
                 cmd.Parameters.AddWithValue("@Voornaam", medewerker.Voornaam);
                 cmd.Parameters.AddWithValue("@Tussenvoegsel", medewerker.Tussenvoegsel);
                 cmd.Parameters.AddWithValue("@Achternaam", medewerker.Achternaam);
-                cmd.Parameters.AddWithValue("@Email", medewerker.Email);
+                cmd.Parameters.AddWithValue("@Email", medewerker.Email.ToLower());
                 cmd.Parameters.AddWithValue("@Wachtwoord", wachtwoordHash);
                 cmd.Parameters.AddWithValue("@TeamId", medewerker.MijnTeam.Id);
                 cmd.ExecuteNonQuery();
@@ -82,11 +87,11 @@ namespace DALMSSQL
                 }
                 return null;
             }
-            catch (SqlException sqlex)
+            catch (SqlException)
             {
                 throw new TemporaryException("Kan geen verbinding maken met de server");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new PermanentException("Er is een fout opgetreden");
             }

@@ -11,8 +11,14 @@ namespace DALMSSQL
 {
     public class VaardigheidDAL : IVaardigheidContainer
     {
-        ConnectionDb db = new ConnectionDb();
+        private readonly ConnectionDb db;
+        private readonly string connectionString;
 
+        public VaardigheidDAL(string con)
+        {
+            this.connectionString = con;
+            this.db = new(this.connectionString);
+        }
         /// <summary>
         /// Maakt een vaardigheid aan
         /// </summary>

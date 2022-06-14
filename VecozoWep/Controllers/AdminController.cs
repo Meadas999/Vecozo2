@@ -274,13 +274,20 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                List<TeamVM> vms = new();
-                List<Team> teams = TC.GetAll();
-                foreach (Team team in teams)
+                if (HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("IsAdmin") != null)
                 {
-                    vms.Add(new TeamVM(team));
+                    if (Convert.ToInt32(HttpContext.Session.GetInt32("IsAdmin")) == 1)
+                    {
+                        List<TeamVM> vms = new();
+                        List<Team> teams = TC.GetAll();
+                        foreach (Team team in teams)
+                        {
+                            vms.Add(new TeamVM(team));
+                        }
+                        return View(vms);
+                    }
                 }
-                return View(vms);
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {
@@ -296,9 +303,16 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                Team team = TC.FindById(id);
-                TeamVM vm = new(team);
-                return View(vm);
+                if (HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("IsAdmin") != null)
+                {
+                    if (Convert.ToInt32(HttpContext.Session.GetInt32("IsAdmin")) == 1)
+                    {
+                        Team team = TC.FindById(id);
+                        TeamVM vm = new(team);
+                        return View(vm);
+                    }
+                }
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {
@@ -334,19 +348,26 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                MedewerkerTeamVM vms = new();
-                List<Medewerker> medewerkers = MC.HaalAlleMedewerkersOp();
-                foreach (Medewerker m in medewerkers)
+                if (HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("IsAdmin") != null)
                 {
-                    vms.MedewerkersVM.Add(new MedewerkerVM(m));
+                    if (Convert.ToInt32(HttpContext.Session.GetInt32("IsAdmin")) == 1)
+                    {
+                        MedewerkerTeamVM vms = new();
+                        List<Medewerker> medewerkers = MC.HaalAlleMedewerkersOp();
+                        foreach (Medewerker m in medewerkers)
+                        {
+                            vms.MedewerkersVM.Add(new MedewerkerVM(m));
+                        }
+                        Team t = TC.FindById(id);
+                        vms.TeamVM = new TeamVM(t);
+                        foreach (Medewerker m in TC.GetMedewerkersFromTeam(t.Id))
+                        {
+                            vms.MedewerkersInTeam.Add(m.UserID);
+                        }
+                        return View(vms);
+                    }
                 }
-                Team t = TC.FindById(id);
-                vms.TeamVM = new TeamVM(t);
-                foreach (Medewerker m in TC.GetMedewerkersFromTeam(t.Id))
-                {
-                    vms.MedewerkersInTeam.Add(m.UserID);
-                }
-                return View(vms);
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {
@@ -385,7 +406,14 @@ namespace VecozoWep.Controllers
         {
             try
             {
-                return View();
+                if (HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("IsAdmin") != null)
+                {
+                    if (Convert.ToInt32(HttpContext.Session.GetInt32("IsAdmin")) == 1)
+                    {
+                        return View();
+                    }
+                }
+                return RedirectToAction("Index", "Login");
             }
             catch (TemporaryException ex)
             {

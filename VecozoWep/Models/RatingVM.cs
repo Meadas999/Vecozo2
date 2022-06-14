@@ -1,14 +1,20 @@
 ﻿using BusnLogicVecozo;
 using InterfaceLib;
+using System.ComponentModel.DataAnnotations;
 using VecozoWep.Models;
 
 namespace VecozoWeb.Models
 {
     public class RatingVM
     {
+        [Required(ErrorMessage = "Voer uw score in.")]
         public int Score { get; set; }
+        [StringLength(250, MinimumLength = 10, ErrorMessage = "Voer een beschrijving in met minimaal 10 karakaters(max. 150 karakters).")]
+        [Required(ErrorMessage = "Voer uw Voornaam in.")]
         public string Beschrijving { get; set; }
         public DateTime LaatsteDatum { get; set; }
+        [StringLength(250, MinimumLength = 1, ErrorMessage = "Voer een vaardigheidsnaam in met minimaal 1 karakaters(max. 150 karakters).")]
+        [Required(ErrorMessage = "Voer uw vaardigheidsnaam in.")]
         public string vaardigheidNaam { get; set; }
         public int vaardigheidId { get; set; }
         public VaardigheidVM Vaardigheid { get; set; }

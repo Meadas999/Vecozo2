@@ -7,13 +7,15 @@
 <br />
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <form method="post" asp-controller="Login" asp-action="LogIn">
+    <span asp-validation-for="Email" class="text-danger"></span>
     <div class="form-floating mb-3">
-        <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-        <label for="floatingInput">Email address</label>
+        <input asp-for="Email" type="email" class="form-control" id="Rspace" placeholder="name@example.com">
+        <label for="Rspace">Email address</label>
     </div>
+    <span asp-validation-for="Password" class="text-danger"></span>
     <div class="form-floating">
-        <input asp-for="Password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
-        <label for="floatingPassword">Password</label>
+        <input asp-for="Password" type="password" class="form-control" id="Rspace" placeholder="Password">
+        <label for="Rspace">Password</label>
     </div>
     <br />
     <div class="form-floating">

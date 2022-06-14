@@ -58,7 +58,7 @@
                                        return true;
                                     }
                                     else{
-                                       document.getElementById('teampie').innerHTML = "team en leidinggevende kiezen is verplicht."
+                                       document.getElementById('teampie').innerHTML = "Team en leidinggevende kiezen is verplicht."
                                         return false;
                                     }
                                 }
@@ -82,22 +82,23 @@
                                 <div class="col-md-4 mb-4">
                                     <div class="form-outline">
                                         <input type="text" id="firstName" class="form-control form-control-lg" onblur="this.value=removeSpaces(this.value);" asp-for="@Model.Medewerker.Voornaam" required />
-                                        <label class="form-label" asp-for="@Model.Medewerker.Voornaam">Voornaam</label>
+                                        <label class="form-label" asp-for="@Model.Medewerker.Voornaam">Voornaam</label> 
                                     </div>
-
+                                    <span asp-validation-for="Medewerker.Voornaam" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-4 mb-4">
                                     <div class="form-outline">
                                         <input type="text" id="tussenvoegsel" class="form-control form-control-lg" onblur="this.value=removeSpaces(this.value);" asp-for="@Model.Medewerker.Tussenvoegsel" />
                                         <label class="form-label" asp-for="@Model.Medewerker.Tussenvoegsel">Tussenvoegsel</label>
                                     </div>
-
+                                    <span asp-validation-for="Medewerker.Tussenvoegsel" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-4 mb-4">
                                     <div class="form-outline">
                                         <input type="text" id="lastName" class="form-control form-control-lg" onblur="this.value=removeSpaces(this.value);" asp-for="@Model.Medewerker.Achternaam" required />
                                         <label class="form-label" asp-for="@Model.Medewerker.Achternaam">Achternaam</label>
                                     </div>
+                                    <span asp-validation-for="Medewerker.Achternaam" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="row">
@@ -106,12 +107,14 @@
                                         <input type="email" id="emailAddress" class="form-control form-control-lg" onblur="this.value=removeSpaces(this.value);" asp-for="@Model.Medewerker.Email" required />
                                         <label class="form-label" asp-for="@Model.Medewerker.Email">Email</label>
                                     </div>
+                                    <span asp-validation-for="Medewerker.Email" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-6 mb-4 pb-2">
                                     <div class="form-outline">
                                         <input type="password" id="wachtwoord" class="form-control form-control-lg" onblur="this.value=removeSpaces(this.value);" asp-for="@Model.Medewerker.Wachtwoord" required />
                                         <label class="form-label" for="wachtwoord">Wachtwoord</label>
                                     </div>
+                                    <span asp-validation-for="Medewerker.Wachtwoord" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="row">

@@ -15,7 +15,7 @@
                         <input type="hidden" asp-for="LaatsteDatum" value="@DateTime.Now" />
                         <input type="hidden" asp-for="vaardigheidId" value="@Model.Vaardigheid.Id" />
                         <label asp-for="vaardigheidNaam">Naam</label>
-                        <input asp-for="vaardigheidNaam" class="form-control" placeholder="@Model.Vaardigheid.Naam">
+                        <input asp-for="vaardigheidNaam" class="form-control" id="Rspace" placeholder="@Model.Vaardigheid.Naam">
                         <span asp-validation-for="vaardigheidNaam" class="text-danger"></span>
                     </div>
                     <br />

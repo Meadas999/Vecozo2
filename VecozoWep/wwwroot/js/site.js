@@ -102,6 +102,25 @@ $(function () {
         })
     })
 
-})
+});
+$(function () {
+
+    // Methode die spacekey weigert.
+    $("input#Rspace").on({
+
+        // Bij elke key die wordt ingedrukt.
+        keydown: function (e) {
+
+            // 32 = space key
+            if (e.which === 32)
+                return false;
+        },
+
+        // Voor copy/paste injection
+        change: function () {
+            this.value = this.value.replace(/\s/g, "");
+        }
+    });
+});
 
 

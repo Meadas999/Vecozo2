@@ -27,6 +27,16 @@ namespace BusnLogicVecozo
             return new Team(dto);
         }
 
+        public Team? FindByUserId(int id)
+        {
+            TeamDTO? dto = container.FindByUserId(id);
+            if(dto != null)
+            {
+                return new Team(dto);
+            }
+            return null;
+        }
+        
         public List<Medewerker> GetMedewerkersFromTeam(int teamid)
         {
             List<MedewerkerDTO> dtos = container.GetMedewerkersFromTeam(teamid);

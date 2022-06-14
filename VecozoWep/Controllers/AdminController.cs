@@ -43,7 +43,7 @@ namespace VecozoWep.Controllers
                         foreach (MedewerkerVM m in vm.Medewerkers)
                         {
                             m.Ratings = VC.FindByMedewerker(m.UserID).Select(x => new RatingVM(x)).ToList();
-                            m.MijnTeam = new(TC.FindById(m.UserID));
+                            m.MijnTeam = new(TC.FindByUserId(m.UserID));
                         }
                         return View(vm);
                     }

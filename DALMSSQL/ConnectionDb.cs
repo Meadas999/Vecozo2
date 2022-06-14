@@ -9,7 +9,8 @@ using System.Text.Json;
 namespace DALMSSQL
 {
     public class ConnectionDb
-    {
+    {
+
         public SqlConnection? connection;
         private readonly string connectionString;
 

@@ -9,21 +9,21 @@ using System.Text.Json;
 namespace DALMSSQL
 {
     public class ConnectionDb
-    {
+    {
         public SqlConnection? connection;
-        private readonly string connectionString;
-
-        public ConnectionDb(string con)
-        {
-            this.connectionString = con;
+        private readonly string connectionString;
+
+        public ConnectionDb(string con)
+        {
+            this.connectionString = con;
         }
         
         public void OpenConnection()
         {
 
             try
-            {
-                connection = new SqlConnection(this.connectionString);
+            {
+                connection = new SqlConnection(this.connectionString);
                 connection.Open();
             }
             catch { }

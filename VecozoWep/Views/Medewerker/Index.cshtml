@@ -8,12 +8,13 @@
 <h3>@Model.GetFullName()</h3>
 <br />
 <body>
-    <table class="table">
+    <table class="table" id="medewerkersTable">
         <thead>
             <tr>
-                <th onclick="sortTable(1) scope="col">Naam</th>
-                <th onclick="sortTable(2) scope="col">Score</th>
-                <th onclick="sortTable(3) scope="col">Beschrijving</th>
+                <th onclick="sortTable(1)" scope="col">Naam</th>
+                <th onclick="sortTable(2)" scope="col">Score</th>
+                <th onclick="sortTable(3)" scope="col">Beschrijving</th>
+                <th onclick="sortTable(4)" scope="col">Laatst gewijzigd</th>
             </tr>
         </thead>
         <tbody>
@@ -35,7 +36,7 @@
                             @r.Beschrijving
                         </td>
                         <td>
-                            @r.LaatsteDatum.ToShortDateString();
+                            @r.LaatsteDatum.ToString("yyyy-MM-dd")
                         </td>
                         <td>
                             <div class="dropdown">

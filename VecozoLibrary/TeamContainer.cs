@@ -23,8 +23,46 @@ namespace BusnLogicVecozo
         
         public Team FindById(int id)
         {
-            TeamDTO dto = container.FindByUserId(id);
+            TeamDTO dto = container.FindByID(id);
             return new Team(dto);
+        }
+
+        public List<Medewerker> GetMedewerkersFromTeam(int teamid)
+        {
+            List<MedewerkerDTO> dtos = container.GetMedewerkersFromTeam(teamid);
+            List<Medewerker> medewerkers = new List<Medewerker>();
+            if (dtos == null)
+            {
+                return null;
+            }
+            else
+            {
+                foreach (MedewerkerDTO m in dtos)
+                {
+                    medewerkers.Add(new Medewerker(m));
+                }
+            }
+            return medewerkers;
+        }
+
+        public void UpdateTeamMedewerker(Medewerker medewerker, Team team)
+        {
+            container.UpdateTeamMedewerker(medewerker.GetDTO(), team.GetDTO());
+        }
+
+        public void Update(Team team)
+        {
+            container.Update(team.GetDTO());
+        }
+
+        public void Create(Team team)
+        {
+            container.Create(team.GetDTO());
+        }
+
+        public void Delete(Team team)
+        {
+            container.Delete(team.GetDTO());
         }
     }
 }

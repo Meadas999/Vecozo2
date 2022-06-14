@@ -269,6 +269,154 @@ namespace VecozoWep.Controllers
                 return View("PermanentError");
             }
         }
+
+        public IActionResult TeamsOverzicht()
+        {
+            try
+            {
+                List<TeamVM> vms = new();
+                List<Team> teams = TC.GetAll();
+                foreach (Team team in teams)
+                {
+                    vms.Add(new TeamVM(team));
+                }
+                return View(vms);
+            }
+            catch (TemporaryException ex)
+            {
+                return View("SqlErrorMessage");
+            }
+            catch (Exception ex)
+            {
+                return View("PermanentError");
+            }
+        }
+
+        public IActionResult BewerkTeam(int id)
+        {
+            try
+            {
+                Team team = TC.FindById(id);
+                TeamVM vm = new(team);
+                return View(vm);
+            }
+            catch (TemporaryException ex)
+            {
+                return View("SqlErrorMessage");
+            }
+            catch (Exception ex)
+            {
+                return View("PermanentError");
+            }
+        }
+
+
+        [HttpPost]
+        public IActionResult BewerkTeam(TeamVM vm)
+        {
+            try
+            {
+                Team t = new(vm.Id, vm.Kleur, vm.Taak, vm.GemRating);
+                TC.Update(t);
+                return RedirectToAction("TeamsOverzicht");
+            }
+            catch (TemporaryException ex)
+            {
+                return View("SqlErrorMessage");
+            }
+            catch (Exception ex)
+            {
+                return View("PermanentError");
+            }
+        }
+
+        public IActionResult PasLedenAan(int id)
+        {
+            try
+            {
+                MedewerkerTeamVM vms = new();
+                List<Medewerker> medewerkers = MC.HaalAlleMedewerkersOp();
+                foreach (Medewerker m in medewerkers)
+                {
+                    vms.MedewerkersVM.Add(new MedewerkerVM(m));
+                }
+                Team t = TC.FindById(id);
+                vms.TeamVM = new TeamVM(t);
+                foreach (Medewerker m in TC.GetMedewerkersFromTeam(t.Id))
+                {
+                    vms.MedewerkersInTeam.Add(m.UserID);
+                }
+                return View(vms);
+            }
+            catch (TemporaryException ex)
+            {
+                return View("SqlErrorMessage");
+            }
+            catch (Exception ex)
+            {
+                return View("PermanentError");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult PasLedenAan(MedewerkerTeamVM vm)
+        {
+            try
+            {
+                Team team = TC.FindById(vm.TeamVM.Id);
+                foreach (var id in vm.MedewerkersInTeam)
+                {
+                    Medewerker med = MC.FindById(id);
+                    TC.UpdateTeamMedewerker(med, team);
+                }
+                return RedirectToAction("TeamsOverzicht");
+            }
+            catch (TemporaryException ex)
+            {
+                return View("SqlErrorMessage");
+            }
+            catch (Exception ex)
+            {
+                return View("PermanentError");
+            }
+        }
+
+        public IActionResult CreateTeam()
+        {
+            try
+            {
+                return View();
+            }
+            catch (TemporaryException ex)
+            {
+                return View("SqlErrorMessage");
+            }
+            catch (Exception ex)
+            {
+                return View("PermanentError");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CreateTeam(TeamVM vm)
+        {
+            try
+            {
+                Team team = new Team(vm.Id, vm.Kleur, vm.Taak, vm.GemRating);
+                TC.Create(team);
+                return RedirectToAction("TeamsOverzicht");
+            }
+            catch (TemporaryException ex)
+            {
+                return View("SqlErrorMessage");
+            }
+            catch (Exception ex)
+            {
+                return View("PermanentError");
+            }
+        }
+
+
         //[HttpGet]
         //public IActionResult VaardigheidToevoegen(int mwid)
         //{

@@ -16,27 +16,18 @@ namespace DALMSSQL
         public ConnectionDb(string con)
         {
             this.connectionString = con;
-        }
-        
+        }
+
         public void OpenConnection()
-        {
-
-            try
-            {
-                connection = new SqlConnection(this.connectionString);
-                connection.Open();
-            }
-            catch { }
+        {
+            connection = new SqlConnection(this.connectionString);
+            connection.Open();
         }
 
         public void CloseConnetion()
-        {
-            try
-            {
-                if (connection != null)
-                    connection.Close();
-            }
-            catch { }
+        {
+            if (connection != null)
+                connection.Close();
         }
     }
 }

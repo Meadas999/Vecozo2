@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DALMSSQL
@@ -173,7 +174,7 @@ namespace DALMSSQL
             try
             {
                 VaardigheidDTO dto = null;
-                int index = GetAll().FindIndex(x => x.Naam == naam);
+                int index = GetAll().FindIndex(x => Regex.IsMatch(x.Naam, Regex.Escape(naam), RegexOptions.IgnoreCase));
                 if (index >= 0)
                 {
                     dto = new VaardigheidDTO(GetAll()[index].Naam, GetAll()[index].Id);
